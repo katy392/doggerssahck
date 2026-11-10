@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Doggers Shack - El futuro de la gastronomía rápida. Experimenta el sabor con tecnología de nivel empresarial y una calidad inigualable.">
+    <meta name="keywords"
+        content="Doggers Shack, comida premium, franquicia tech, hotdogs gourmet, gastronomía innovadora">
+    <title>Doggers Shack | El Futuro del Sabor</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- 'Playfair Display' para reflejar la elegancia del logo original, 'Inter' para la UI limpia y tech -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap"
+        rel="stylesheet">
+
+    <!-- FontAwesome para Iconos (WhatsApp, etc) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            blue: '#0057FF', // Azul vibrante del logo
+                            dark: '#002266', // Fondo azul corporativo profundo
+                            darker: '#001540', // Azul marino muy oscuro
+                            yellow: '#FFD600', // Amarillo del rayo
+                            gray: '#93C5FD' // Tono azulado suave para textos
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    backgroundImage: {
+                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom CSS for specific effects, loader, and scrollbar -->
+    <style>
+        :root {
+            --brand-blue: #0057FF;
+            --brand-yellow: #FFD600;
+        }
+
+        body {
+            background-color: #001540;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #001540;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #002266;
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--brand-blue);
+        }
+
+        /* Loader Styles */
+        #loader {
+            transition: opacity 0.8s ease-out, visibility 0.8s ease-out;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left-color: var(--brand-yellow);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Glowing Text Effect */
+        .text-glow {
+            text-shadow: 0 0 20px rgba(255, 214, 0, 0.4);
+        }
+
+        /* Glassmorphism */
+        .glass {
+            background: rgba(0, 34, 102, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 87, 255, 0.5);
+            box-shadow: 0 10px 30px -10px rgba(0, 87, 255, 0.3);
+        }
+
+        /* Hide elements for GSAP scroll animations initially */
+        .gsap-reveal {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        /* Canvas absolute positioning */
+        #hero-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body class="antialiased selection:bg-brand-blue selection:text-white">
+
+    <!-- Pantalla de Carga (Spinner) -->
+    <div id="loader" class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-brand-dark">
+        <div class="relative flex items-center justify-center">
+            <div class="spinner absolute"></div>
+            <!-- Icono Rayo en el centro -->
+            <i class="fa-solid fa-bolt text-brand-yellow text-2xl z-10 animate-pulse"></i>
+        </div>
+        <h2 class="font-serif italic text-2xl mt-6 tracking-wider text-white">Doggers Shack</h2>
+        <p class="text-gray-500 text-sm mt-2 font-sans tracking-[0.2em] uppercase">Iniciando experiencia</p>
+    </div>
+
+    <!-- Navegación -->
+    <header class="fixed top-0 left-0 w-full z-50 glass transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <h1 class="font-serif text-2xl md:text-3xl text-white font-bold tracking-tight">
+                        Doggers<br><span class="italic text-brand-blue leading-none">Shack</span>
+                        <i class="fa-solid fa-bolt text-brand-yellow text-xl ml-1 align-middle"></i>
+                    </h1>
+                </div>
+
+                <!-- Desktop Menu -->
+                <nav class="hidden md:flex space-x-8 items-center">
+                    <a href="#experiencia"
+                        class="text-sm font-medium text-gray-300 hover:text-white transition-colors">La Experiencia</a>
+                    <a href="#innovacion"
+                        class="text-sm font-medium text-gray-300 hover:text-white transition-colors">Innovación</a>
+                    <a href="#menu"
+                        class="text-sm font-medium text-gray-300 hover:text-white transition-colors">Menú</a>
+                    <!-- CTA 1 -->
+                    <a href="#contacto"
+                        class="bg-white text-brand-dark px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-brand-blue hover:text-white transition-all duration-300 shadow-[0_0_15px_rgba(255,255,255,0.2)] hover:shadow-[0_0_20px_rgba(0,87,255,0.6)]">
+                        Quiero mi experiencia
+                    </a>
+                </nav>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-gray-300 hover:text-white focus:outline-none">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu (Hidden by default) -->
+        <div id="mobile-menu"
+            class="hidden md:hidden bg-brand-dark/95 backdrop-blur-xl border-t border-gray-800 absolute w-full">
+            <div class="px-4 pt-2 pb-6 space-y-1">
+                <a href="#experiencia"
+                    class="block px-3 py-4 text-base font-medium text-gray-300 hover:text-white border-b border-gray-800">La
+                    Experiencia</a>
+                <a href="#innovacion"
+                    class="block px-3 py-4 text-base font-medium text-gray-300 hover:text-white border-b border-gray-800">Innovación</a>
+                <a href="#menu"
+                    class="block px-3 py-4 text-base font-medium text-gray-300 hover:text-white border-b border-gray-800">Menú</a>
+                <a href="#contacto"
+                    class="block mt-4 text-center bg-brand-blue text-white px-6 py-3 rounded-full text-base font-semibold">
+                    Estoy listo para ordenar
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- HERO SECTION -->
+        <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+            <!-- Canvas para partículas interactivas -->
+            <canvas id="hero-canvas"></canvas>
+
+            <!-- Gradiente de fondo sutil -->
+            <div class="absolute inset-0 bg-gradient-radial from-brand-blue/30 to-transparent opacity-60"></div>
+
+            <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 text-center flex flex-col items-center">
+                <div
+                    class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-brand-blue/30 bg-brand-blue/10 backdrop-blur-sm mb-8 hero-anim shadow-[0_0_15px_rgba(0,87,255,0.2)]">
+                    <span class="flex h-2 w-2 relative">
+                        <span
+                            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-yellow opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-brand-yellow"></span>
+                    </span>
+                    <span class="text-xs font-semibold text-brand-yellow uppercase tracking-widest">Sabor Premium &
+                        Velocidad</span>
+                </div>
+
+                <h1
+                    class="text-5xl md:text-7xl lg:text-8xl font-serif font-bold text-white leading-tight mb-6 hero-anim">
+                    El futuro de los <br>
+                    <span
+                        class="text-transparent bg-clip-text bg-gradient-to-r from-brand-yellow via-white to-brand-blue text-glow italic">Hot
+                        Dogs & Burgers</span>
+                </h1>
+
+                <p class="mt-4 max-w-2xl mx-auto text-lg md:text-xl text-blue-100 mb-10 hero-anim font-light">
+                    Doggers Shack revoluciona el comfort food. Disfruta de nuestros Doggers de autor, Hamburguesas
+                    Smash, Papas ultra crujientes y Malteadas épicas con calidad de nivel empresarial.
+                </p>
+
+                <!-- CTA 2 -->
+                <div class="flex flex-col sm:flex-row gap-4 hero-anim">
+                    <a href="#experiencia"
+                        class="group relative px-8 py-4 bg-brand-blue text-white rounded-full font-semibold overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_30px_rgba(0,87,255,0.5)]">
+                        <span class="relative z-10 flex items-center gap-2">
+                            Descubrir la magia <i
+                                class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </span>
+                        <div
+                            class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out">
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Scroll indicator -->
+            <div
+                class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-50 animate-bounce hero-anim">
+                <span class="text-xs tracking-widest uppercase text-gray-500">Scroll</span>
+                <i class="fa-solid fa-chevron-down text-sm"></i>
+            </div>
+        </section>
+
+        <!-- SECCIÓN: LA EXPERIENCIA (Imagen + Texto + Scroll Reveal) -->
+        <section id="experiencia" class="py-24 relative bg-brand-darker overflow-hidden">
+            <div class="max-w-7xl mx-auto px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+
+                    <!-- Imagen con efecto Parallax simulado -->
+                    <div
+                        class="relative group rounded-3xl overflow-hidden gsap-reveal section-img shadow-[0_0_40px_rgba(0,87,255,0.3)] border border-brand-blue/20">
+                        <!-- Overlay decorativo -->
+                        <div
+                            class="absolute inset-0 bg-brand-blue/10 mix-blend-overlay z-10 group-hover:bg-transparent transition-colors duration-500">
+                        </div>
+                        <img src="https://images.unsplash.com/photo-1550547660-d9450f859349?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+                            alt="Hamburguesa gourmet de alta calidad"
+                            class="w-full h-[500px] object-cover transform scale-105 group-hover:scale-110 transition-transform duration-700">
+
+                        <!-- Etiqueta flotante -->
+                        <div
+                            class="absolute bottom-6 left-6 z-20 glass-card px-6 py-4 rounded-2xl border-brand-blue/30">
+                            <div class="flex items-center gap-4">
+                                <div class="bg-brand-yellow text-brand-darker p-3 rounded-full shadow-lg">
+                                    <i class="fa-solid fa-fire-burner"></i>
+                                </div>
+                                <div>
+                                    <p class="text-white font-bold text-lg">Cocina de Alto Nivel</p>
+                                    <p class="text-blue-200 text-sm">Ingredientes siempre frescos</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contenido de texto -->
+                    <div class="gsap-reveal section-text">
+                        <h2 class="font-serif text-4xl md:text-5xl font-bold mb-6">
+                            El Arte del <span class="italic text-brand-yellow">Fast Food Premium</span>
+                        </h2>
+                        <p class="text-blue-100 text-lg mb-6 leading-relaxed">
+                            Diseñamos cada receta como si fuera código de alto rendimiento. En Doggers Shack, elevamos
+                            los clásicos: hot dogs y hamburguesas, combinando sabores explosivos con una estética
+                            inigualable.
+                        </p>
+                        <ul class="space-y-4 mb-10">
+                            <li class="flex items-start gap-3">
+                                <i class="fa-solid fa-bolt text-brand-yellow mt-1"></i>
+                                <span class="text-blue-50">Hot Dogs y Hamburguesas Smash con recetas de autor.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i class="fa-solid fa-bolt text-brand-yellow mt-1"></i>
+                                <span class="text-blue-50">Papas fritas con el nivel perfecto de crunch.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i class="fa-solid fa-bolt text-brand-yellow mt-1"></i>
+                                <span class="text-blue-50">Malteadas ultra cremosas que completan tu experiencia.</span>
+                            </li>
+                        </ul>
+                        <!-- CTA 3 -->
+                        <a href="#contacto"
+                            class="inline-flex items-center gap-2 text-brand-yellow font-bold text-lg hover:text-white transition-colors group bg-brand-blue/20 px-6 py-3 rounded-full border border-brand-blue/50 hover:bg-brand-blue/40">
+                            Quiero unirme a la revolución
+                            <i
+                                class="fa-solid fa-arrow-right transform group-hover:translate-x-2 transition-transform"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN: INNOVACIÓN / CARACTERÍSTICAS (Tarjetas Glassmorphism) -->
+        <section id="innovacion" class="py-24 relative bg-brand-dark border-y border-brand-blue/10">
+            <div class="max-w-7xl mx-auto px-6 lg:px-8">
+                <div class="text-center mb-16 gsap-reveal">
+                    <h2 class="text-brand-yellow text-sm font-bold uppercase tracking-widest mb-2">Arquitectura del Menú
+                    </h2>
+                    <h3 class="font-serif text-4xl md:text-5xl text-white font-bold">Pilares de nuestra <span
+                            class="italic">Marca</span></h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Tarjeta 1 -->
+                    <div
+                        class="glass-card p-8 rounded-3xl gsap-reveal stagger-card hover:bg-brand-blue/10 hover:border-brand-blue/50">
+                        <div
+                            class="w-14 h-14 bg-brand-blue/20 rounded-2xl flex items-center justify-center mb-6 text-brand-yellow border border-brand-blue/40 shadow-[0_0_15px_rgba(255,214,0,0.2)]">
+                            <i class="fa-solid fa-hotdog text-2xl"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-white mb-3">Doggers Épicos</h4>
+                        <p class="text-blue-100 leading-relaxed">No son simples hot dogs. Son creaciones premium con pan
+                            artesanal, salchichas de máxima calidad y toppings que rompen esquemas.</p>
+                    </div>
+
+                    <!-- Tarjeta 2 -->
+                    <div
+                        class="glass-card p-8 rounded-3xl gsap-reveal stagger-card relative overflow-hidden border-brand-blue/30 shadow-[0_0_20px_rgba(0,87,255,0.1)] hover:border-brand-yellow/50">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-brand-yellow/10 rounded-bl-full -z-10"></div>
+                        <div
+                            class="w-14 h-14 bg-brand-yellow/20 rounded-2xl flex items-center justify-center mb-6 text-brand-yellow border border-brand-yellow/30 shadow-[0_0_15px_rgba(255,214,0,0.3)]">
+                            <i class="fa-solid fa-burger text-2xl"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-white mb-3">Smash Burgers</h4>
+                        <p class="text-blue-100 leading-relaxed">Carne jugosa, costra perfecta y queso derretido en su
+                            punto. Diseñadas para derretirse en tu paladar a velocidades Gigabit.</p>
+                    </div>
+
+                    <!-- Tarjeta 3 -->
+                    <div
+                        class="glass-card p-8 rounded-3xl gsap-reveal stagger-card hover:bg-brand-blue/10 hover:border-brand-blue/50">
+                        <div
+                            class="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center mb-6 text-white border border-white/20">
+                            <i class="fa-solid fa-ice-cream text-2xl"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-white mb-3">Malteadas & Papas</h4>
+                        <p class="text-blue-100 leading-relaxed">El complemento definitivo. Papas siempre crujientes y
+                            doradas, acompañadas de malteadas espesas con sabores irresistibles.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN: SHOWCASE VISUAL (Imágenes grandes y testimonios estilo Tech) -->
+        <section id="menu" class="py-0 relative bg-brand-darker">
+            <div class="grid grid-cols-1 lg:grid-cols-2 h-auto lg:h-[80vh]">
+                <!-- Panel Izquierdo (Imagen) -->
+                <div class="relative h-[400px] lg:h-full overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1572490122747-3968b75bb699?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"
+                        alt="Hamburguesas y Malteadas" class="w-full h-full object-cover parallax-bg">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-r from-brand-darker lg:from-transparent to-transparent opacity-90 lg:opacity-0">
+                    </div>
+                </div>
+
+                <!-- Panel Derecho (Contenido) -->
+                <div class="flex flex-col justify-center p-12 lg:p-24 bg-brand-darker relative z-10 gsap-reveal">
+                    <i class="fa-solid fa-quote-left text-4xl text-brand-yellow/50 mb-6"></i>
+                    <h3 class="text-3xl lg:text-5xl font-serif font-bold text-white mb-8 leading-tight">
+                        "La mejor combinación de tecnología y sabor. Las hamburguesas y sus malteadas son simplemente de
+                        otro nivel."
+                    </h3>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-gray-800 rounded-full overflow-hidden border-2 border-brand-blue">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80"
+                                alt="Usuario" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <p class="text-white font-bold">Tech Innovator Magazine</p>
+                            <p class="text-brand-blue text-sm">Reseña Gastronómica 2026</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN DE CONTACTO (Formulario -> WhatsApp) -->
+        <section id="contacto" class="py-24 relative bg-brand-dark overflow-hidden">
+            <!-- Círculos decorativos de fondo -->
+            <div
+                class="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-blue/5 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/3">
+            </div>
+            <div
+                class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-brand-yellow/5 rounded-full blur-[80px] translate-y-1/3 -translate-x-1/3">
+            </div>
+
+            <div class="max-w-4xl mx-auto px-6 lg:px-8 relative z-10">
+                <div class="glass-card rounded-3xl p-8 lg:p-12 gsap-reveal">
+                    <div class="text-center mb-10">
+                        <h2 class="text-3xl md:text-5xl font-serif font-bold text-white mb-4">Inicia tu <span
+                                class="text-brand-blue italic">Pedido</span></h2>
+                        <p class="text-gray-400">Conecta directamente con nuestro equipo a través de WhatsApp para una
+                            atención inmediata y personalizada.</p>
+                    </div>
+
+                    <form id="wa-form" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label for="name" class="text-sm text-gray-400 font-medium">Nombre Completo</label>
+                                <input type="text" id="name" required
+                                    class="w-full bg-brand-dark/50 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brand-blue focus:ring-1 focus:ring-brand-blue transition-colors"
+                                    placeholder="Ej. Carlos Slim">
+                            </div>
+                            <div class="space-y-2">
+                                <label for="service" class="text-sm text-blue-200 font-medium">¿Qué deseas probar
+                                    hoy?</label>
+                                <select id="service" required
+                                    class="w-full bg-brand-darker border border-brand-blue/30 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow transition-colors appearance-none shadow-inner">
+                                    <option value="" disabled selected>Selecciona tu antojo</option>
+                                    <option value="Dogger Épico">Dogger Épico</option>
+                                    <option value="Smash Burger Premium">Smash Burger Premium</option>
+                                    <option value="Combo: Burger + Papas + Malteada">Combo: Burger + Papas + Malteada
+                                    </option>
+                                    <option value="Solo Malteadas y Papas">Solo Malteadas y Papas</option>
+                                    <option value="Dudas / Eventos">Dudas / Eventos</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <label for="message" class="text-sm text-blue-200 font-medium">Mensaje / Especificaciones
+                                (Opcional)</label>
+                            <textarea id="message" rows="3"
+                                class="w-full bg-brand-darker border border-brand-blue/30 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow transition-colors resize-none shadow-inner"
+                                placeholder="¿Alguna instrucción especial para tu hamburguesa o hot dog?"></textarea>
+                        </div>
+
+                        <!-- CTA 4 -->
+                        <button type="submit"
+                            class="w-full bg-brand-blue text-white rounded-xl py-4 font-bold text-lg hover:bg-blue-600 transition-colors shadow-lg hover:shadow-brand-blue/40 flex items-center justify-center gap-2 group">
+                            <i class="fa-brands fa-whatsapp text-2xl group-hover:scale-110 transition-transform"></i>
+                            Enviar mi orden ahora
+                        </button>
+                    </form>
+                    <p class="text-center text-xs text-gray-500 mt-4"><i class="fa-solid fa-lock mr-1"></i> Tus datos
+                        abren directo en tu aplicación de WhatsApp de forma segura.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-brand-darker border-t border-gray-800 pt-16 pb-8 relative z-10">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                <div class="col-span-1 md:col-span-2">
+                    <h2 class="font-serif text-2xl text-white font-bold mb-4 tracking-tight">
+                        Doggers<br><span class="italic text-brand-blue">Shack</span>
+                        <i class="fa-solid fa-bolt text-brand-yellow ml-1 text-lg"></i>
+                    </h2>
+                    <p class="text-gray-400 max-w-sm">
+                        Redefiniendo la gastronomía con estándares de alta tecnología. Sabor premium, velocidad
+                        corporativa.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-4 uppercase text-sm tracking-wider">Navegación</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#experiencia"
+                                class="text-gray-400 hover:text-brand-blue transition-colors text-sm">La Experiencia</a>
+                        </li>
+                        <li><a href="#innovacion"
+                                class="text-gray-400 hover:text-brand-blue transition-colors text-sm">Innovación</a>
+                        </li>
+                        <li><a href="#menu" class="text-gray-400 hover:text-brand-blue transition-colors text-sm">El
+                                Menú</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-4 uppercase text-sm tracking-wider">Social</h4>
+                    <div class="flex space-x-4">
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:bg-brand-blue hover:text-white transition-all">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:bg-brand-blue hover:text-white transition-all">
+                            <i class="fa-brands fa-twitter"></i>
+                        </a>
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:bg-brand-blue hover:text-white transition-all">
+                            <i class="fa-brands fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-gray-500 text-sm">© 2026 Doggers Shack. Todos los derechos reservados.</p>
+                <p class="text-gray-500 text-sm">Diseñado con <i class="fa-solid fa-heart text-brand-blue mx-1"></i>
+                    nivel Enterprise</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Botón Flotante WhatsApp -->
+    <a href="https://wa.me/5211234567890?text=Hola,%20me%20gustar%C3%ADa%20vivir%20la%20experiencia%20Doggers%20Shack."
+        target="_blank" rel="noopener noreferrer"
+        class="fixed bottom-6 right-6 w-14 h-14 bg-[#25D366] rounded-full flex items-center justify-center text-white text-3xl shadow-[0_4px_20px_rgba(37,211,102,0.4)] hover:scale-110 hover:bg-[#20bd5a] transition-all duration-300 z-50 animate-bounce">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
+    <!-- Scripts: GSAP para animaciones y Script propio -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <script>
+        // 1. Manejo del Loader
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('loader');
+            setTimeout(() => {
+                loader.style.opacity = '0';
+                loader.style.visibility = 'hidden';
+
+                // Iniciar animaciones del Hero una vez que carga
+                initHeroAnimations();
+            }, 1000); // Pequeño delay para mostrar el branding
+        });
+
+        // 2. Menú Móvil
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+
+        // Cerrar menú al hacer click en un enlace
+        menu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.add('hidden');
+            });
+        });
+
+        // 3. Efecto Navbar al hacer scroll
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('shadow-lg');
+                nav.style.background = 'rgba(0, 34, 102, 0.95)'; // Azul corporativo
+            } else {
+                nav.classList.remove('shadow-lg');
+                nav.style.background = 'rgba(0, 34, 102, 0.5)'; // Transparencia arriba
+            }
+        });
+
+        // 4. Lógica de Envío del Formulario a WhatsApp
+        document.getElementById('wa-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const service = document.getElementById('service').value;
+            const message = document.getElementById('message').value;
+
+            // Número de prueba (reemplazar con el real)
+            const phoneNumber = "5211234567890";
+
+            let waText = `¡Hola! Soy *${name}*.\n\nEstoy listo para mi experiencia Doggers Shack. Me interesa: *${service}*.\n`;
+            if (message) {
+                waText += `\nDetalles adicionales: ${message}`;
+            }
+
+            const encodedText = encodeURIComponent(waText);
+            const waUrl = `https://wa.me/${phoneNumber}?text=${encodedText}`;
+
+            window.open(waUrl, '_blank');
+        });
+
+        // 5. Animaciones con GSAP
+        gsap.registerPlugin(ScrollTrigger);
+
+        function initHeroAnimations() {
+            // Animación del Hero
+            gsap.from(".hero-anim", {
+                y: 50,
+                opacity: 0,
+                duration: 1.2,
+                stagger: 0.2,
+                ease: "power4.out"
+            });
+        }
+
+        // Animaciones de Scroll (Revelar elementos al bajar)
+        // Registramos todos los elementos con la clase .gsap-reveal
+        document.addEventListener("DOMContentLoaded", (event) => {
+
+            // Para asegurar que los elementos ocultos se muestren con la animación
+            gsap.set(".gsap-reveal", { autoAlpha: 0, y: 50 });
+
+            ScrollTrigger.batch(".gsap-reveal", {
+                onEnter: batch => gsap.to(batch, { autoAlpha: 1, y: 0, duration: 1, stagger: 0.15, ease: "power3.out" }),
+                start: "top 85%", // Inicia cuando el top del elemento alcanza el 85% del viewport
+            });
+
+            // Animación de tarjetas en cascada (stagger) en la sección innovación
+            gsap.set(".stagger-card", { autoAlpha: 0, y: 50 });
+            ScrollTrigger.batch(".stagger-card", {
+                onEnter: batch => gsap.to(batch, { autoAlpha: 1, y: 0, duration: 0.8, stagger: 0.2, ease: "back.out(1.7)" }),
+                start: "top 85%"
+            });
+
+            // Parallax sencillo en imágenes
+            gsap.to(".parallax-bg", {
+                yPercent: 20,
+                ease: "none",
+                scrollTrigger: {
+                    trigger: "#menu",
+                    start: "top bottom",
+                    end: "bottom top",
+                    scrub: true
+                }
+            });
+        });
+
+        // 6. Animación de Partículas (Canvas) para el Hero - "Efecto Big Tech"
+        const canvas = document.getElementById('hero-canvas');
+        const ctx = canvas.getContext('2d');
+        let particlesArray;
+
+        // Ajustar tamaño del canvas
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Clase Partícula
+        class Particle {
+            constructor(x, y, directionX, directionY, size, color) {
+                this.x = x;
+                this.y = y;
+                this.directionX = directionX;
+                this.directionY = directionY;
+                this.size = size;
+                this.color = color;
+            }
+            // Dibujar partícula
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+
+                // Brillo
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = this.color;
+            }
+            // Actualizar posición
+            update() {
+                if (this.x > canvas.width || this.x < 0) {
+                    this.directionX = -this.directionX;
+                }
+                if (this.y > canvas.height || this.y < 0) {
+                    this.directionY = -this.directionY;
+                }
+                this.x += this.directionX;
+                this.y += this.directionY;
+                this.draw();
+            }
+        }
+
+        // Inicializar partículas
+        function initCanvas() {
+            particlesArray = [];
+            let numberOfParticles = (canvas.height * canvas.width) / 15000;
+            if (numberOfParticles > 100) numberOfParticles = 100; // Limitar en pantallas grandes
+
+            for (let i = 0; i < numberOfParticles; i++) {
+                let size = (Math.random() * 2) + 0.5;
+                let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+                let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+                let directionX = (Math.random() * 0.4) - 0.2;
+                let directionY = (Math.random() * 0.4) - 0.2;
+                // Alternar colores entre el Azul de la marca y blanco semi-transparente
+                let color = Math.random() > 0.5 ? 'rgba(0, 87, 255, 0.4)' : 'rgba(255, 255, 255, 0.1)';
+
+                particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+            }
+        }
+
+        // Loop de animación
+        function animateCanvas() {
+            requestAnimationFrame(animateCanvas);
+            ctx.clearRect(0, 0, innerWidth, innerHeight);
+
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+            }
+            // Conectar partículas cercanas (Opcional, omitido para mantenerlo limpio tipo estrellas)
+        }
+
+        initCanvas();
+        animateCanvas();
+
+    </script>
+</body>
+
+</html>
